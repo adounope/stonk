@@ -1,0 +1,18 @@
+//@version=5
+strategy("BarUpDn&x20", overlay=true, default_qty_type = strategy.percent_of_equity, default_qty_value = 10)
+maxIdLossPcnt = input.float(5, "Max Intraday Loss(%)")
+strategy.risk.max_intraday_loss(maxIdLossPcnt, strategy.percent_of_equity)
+ma5 = ta.sma(close, 5)
+ma20 = ta.sma(close, 20)
+ma60 = ta.sma(close, 60)
+ma100 = ta.sma(close, 100)
+if (close > open and open > close[1] and close > ma5 and ma5 > ma60 and ma60 > ma100)
+	strategy.entry("BarUp", strategy.long)
+if (close < ma5 or (close[1] < open[1] and close < open))
+	strategy.close("BarUp")
+
+if (close < open and open < close[1] and close < ma5 and ma5 < ma60 and ma60 < ma100)
+	strategy.entry("BarDn", strategy.short)
+if (close > ma5 or (close[1] > open[1] and close > open))
+	strategy.close("BarDn")
+//plot(strategy.equity, title="equity", color=color.red, linewidth=2, style=plot.style_areabr)
